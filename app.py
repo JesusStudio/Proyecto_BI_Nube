@@ -92,24 +92,160 @@ st.markdown(
             border: 1px solid #e5e7e6;
         }
 
+        /* =====================================================
+           FILTROS EN TEMA CLARO
+        ===================================================== */
+
+        div[data-testid="stSelectbox"],
+        div[data-testid="stDateInput"] {
+            background: transparent;
+            border-radius: 9px;
+        }
+
+        div[data-baseweb="select"] > div {
+            background-color: white !important;
+            color: #111827 !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 8px !important;
+        }
+
+        div[data-baseweb="select"] span {
+            color: #111827 !important;
+        }
+
+        div[data-baseweb="select"] input {
+            color: #111827 !important;
+            -webkit-text-fill-color: #111827 !important;
+        }
+
+        div[data-baseweb="select"] svg {
+            fill: #111827 !important;
+            color: #111827 !important;
+        }
+
+        div[data-baseweb="popover"] {
+            background-color: white !important;
+        }
+
+        div[data-baseweb="popover"] ul {
+            background-color: white !important;
+        }
+
+        div[data-baseweb="popover"] li {
+            background-color: white !important;
+            color: #111827 !important;
+        }
+
+        div[data-baseweb="popover"] li:hover {
+            background-color: #e8f3ef !important;
+            color: #111827 !important;
+        }
+
+        div[data-testid="stDateInput"] input {
+            background-color: white !important;
+            color: #111827 !important;
+            -webkit-text-fill-color: #111827 !important;
+        }
+
+        div[data-testid="stDateInput"] button {
+            background-color: white !important;
+            color: #111827 !important;
+        }
+
+        div[data-testid="stDateInput"] svg {
+            fill: #111827 !important;
+            color: #111827 !important;
+        }
+
+        div[data-testid="stWidgetLabel"] p {
+            color: #111827 !important;
+            font-weight: 650 !important;
+        }
+
+        .stSelectbox label,
+        .stDateInput label {
+            font-weight: 650;
+            color: #111827 !important;
+        }
+
+        /* =====================================================
+           TABLA HTML CLARA
+        ===================================================== */
+
+        .contenedor-tabla {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 8px;
+            height: 335px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+        }
+
+        .tabla-resumen {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            color: #111827;
+            font-size: 14px;
+        }
+
+        .tabla-resumen thead th {
+            background-color: #dcefe8;
+            color: #111827;
+            font-weight: 700;
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 2px solid #a7cfc0;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .tabla-resumen tbody td {
+            background-color: white;
+            color: #111827;
+            padding: 11px 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tabla-resumen tbody tr:hover td {
+            background-color: #f0f8f5;
+        }
+
+        .tabla-resumen th:nth-child(2),
+        .tabla-resumen th:nth-child(3),
+        .tabla-resumen td:nth-child(2),
+        .tabla-resumen td:nth-child(3) {
+            text-align: right;
+        }
+
+        /* =====================================================
+           DATAFRAME Y EXPANDER
+        ===================================================== */
+
         div[data-testid="stDataFrame"] {
-            background: white;
+            background-color: white !important;
+            color: #111827 !important;
             border-radius: 13px;
             padding: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.13);
             border: 1px solid #e5e7e6;
         }
 
-        div[data-testid="stSelectbox"],
-        div[data-testid="stDateInput"] {
-            background: white;
-            border-radius: 9px;
+        div[data-testid="stDataFrame"] * {
+            color: #111827;
         }
 
-        .stSelectbox label,
-        .stDateInput label {
-            font-weight: 650;
-            color: #333333;
+        div[data-testid="stExpander"] {
+            background-color: white !important;
+            border-radius: 10px;
+            color: #111827 !important;
+        }
+
+        div[data-testid="stExpander"] summary,
+        div[data-testid="stExpander"] summary p {
+            color: #111827 !important;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -123,10 +259,6 @@ st.markdown(
 
         div[data-testid="stMarkdownContainer"] p {
             color: #111827;
-        }
-
-        div[data-testid="stExpander"] details summary p {
-            color: #111827 !important;
         }
 
         header[data-testid="stHeader"] {
@@ -354,12 +486,27 @@ def crear_prediccion(
 
         figura.add_annotation(
             text="No hay suficientes datos para predecir",
-            showarrow=False
+            showarrow=False,
+            font=dict(
+                color="#111827",
+                size=14
+            )
         )
 
         figura.update_layout(
-            title=titulo,
-            height=230
+            title=dict(
+                text=titulo,
+                font=dict(
+                    color="#111827",
+                    size=16
+                )
+            ),
+            paper_bgcolor="white",
+            plot_bgcolor="white",
+            font=dict(
+                color="#111827"
+            ),
+            height=235
         )
 
         return figura
@@ -392,15 +539,10 @@ def crear_prediccion(
         dias_futuros
     )
 
-    if columna in [
-        "Saturacion",
-        "Quejas",
-        "Toneladas"
-    ]:
-        valores_futuros = np.maximum(
-            valores_futuros,
-            0
-        )
+    valores_futuros = np.maximum(
+        valores_futuros,
+        0
+    )
 
     if columna == "Saturacion":
         valores_futuros = np.minimum(
@@ -423,7 +565,12 @@ def crear_prediccion(
             name="Histórico",
             line=dict(
                 color=color_linea,
-                width=1.5
+                width=1.7
+            ),
+            hovertemplate=(
+                "<b>Fecha:</b> %{x|%d/%m/%Y}<br>"
+                f"<b>{unidad}:</b> %{{y:.2f}}"
+                "<extra></extra>"
             )
         )
     )
@@ -435,9 +582,14 @@ def crear_prediccion(
             mode="lines",
             name="Predicción",
             line=dict(
-                color="#ff9f43",
+                color="#f59e0b",
                 width=3,
                 dash="dash"
+            ),
+            hovertemplate=(
+                "<b>Fecha:</b> %{x|%d/%m/%Y}<br>"
+                f"<b>Predicción:</b> %{{y:.2f}}"
+                "<extra></extra>"
             )
         )
     )
@@ -445,25 +597,32 @@ def crear_prediccion(
     figura.add_vline(
         x=ultima_fecha,
         line_dash="dot",
-        line_color="#9ca3af"
+        line_color="#6b7280"
     )
 
     figura.update_layout(
         title=dict(
             text=titulo,
             font=dict(
-                size=16,
-                color="white"
-            )
+                color="#111827",
+                size=16
+            ),
+            x=0.02,
+            xanchor="left"
         ),
         xaxis_title="Fecha",
         yaxis_title=unidad,
-        template="plotly_dark",
+        paper_bgcolor="white",
+        plot_bgcolor="white",
+        font=dict(
+            color="#111827",
+            size=11
+        ),
         height=235,
         margin=dict(
             l=20,
             r=20,
-            t=45,
+            t=48,
             b=20
         ),
         legend=dict(
@@ -473,24 +632,42 @@ def crear_prediccion(
             xanchor="right",
             x=1,
             font=dict(
-                color="white"
-            )
+                color="#111827",
+                size=10
+            ),
+            bgcolor="rgba(255,255,255,0)"
         ),
-        font=dict(
-            color="white"
+        hoverlabel=dict(
+            bgcolor="white",
+            font_color="#111827",
+            bordercolor="#d1d5db"
         )
     )
 
     figura.update_xaxes(
-        tickfont=dict(color="white"),
-        title_font=dict(color="white"),
-        gridcolor="#374151"
+        tickfont=dict(
+            color="#111827"
+        ),
+        title_font=dict(
+            color="#111827"
+        ),
+        gridcolor="#e5e7eb",
+        linecolor="#9ca3af",
+        zerolinecolor="#d1d5db",
+        showline=True
     )
 
     figura.update_yaxes(
-        tickfont=dict(color="white"),
-        title_font=dict(color="white"),
-        gridcolor="#374151"
+        tickfont=dict(
+            color="#111827"
+        ),
+        title_font=dict(
+            color="#111827"
+        ),
+        gridcolor="#e5e7eb",
+        linecolor="#9ca3af",
+        zerolinecolor="#d1d5db",
+        showline=True
     )
 
     return figura
@@ -777,10 +954,8 @@ with zona_principal:
         tabla_resumen = tabla_resumen.rename(
             columns={
                 "Residuo": "Residuo",
-                "Total_Toneladas":
-                    "Total Toneladas",
-                "Total_Quejas":
-                    "Total Quejas"
+                "Total_Toneladas": "Total Toneladas",
+                "Total_Quejas": "Total Quejas"
             }
         )
 
@@ -798,21 +973,41 @@ with zona_principal:
             unsafe_allow_html=True
         )
 
-        st.dataframe(
-            tabla_resumen,
-            use_container_width=True,
-            hide_index=True,
-            height=335,
-            column_config={
-                "Total Toneladas":
-                    st.column_config.NumberColumn(
-                        format="%.2f"
-                    ),
-                "Total Quejas":
-                    st.column_config.NumberColumn(
-                        format="%d"
-                    )
-            }
+        tabla_visual = tabla_resumen.copy()
+
+        tabla_visual["Total Toneladas"] = (
+            tabla_visual["Total Toneladas"]
+            .apply(
+                lambda valor: formato_decimal(
+                    valor,
+                    2
+                )
+            )
+        )
+
+        tabla_visual["Total Quejas"] = (
+            tabla_visual["Total Quejas"]
+            .apply(
+                lambda valor: formato_decimal(
+                    valor,
+                    0
+                )
+            )
+        )
+
+        html_tabla = tabla_visual.to_html(
+            index=False,
+            classes="tabla-resumen",
+            border=0
+        )
+
+        st.markdown(
+            f"""
+            <div class="contenedor-tabla">
+                {html_tabla}
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
     # =====================================================
@@ -924,7 +1119,7 @@ with zona_predicciones:
         operacion="mean",
         titulo="Predicción de Saturación",
         unidad="Porcentaje",
-        color_linea="#68c46a"
+        color_linea="#46a65b"
     )
 
     st.plotly_chart(
@@ -938,7 +1133,7 @@ with zona_predicciones:
         operacion="sum",
         titulo="Predicción de Quejas",
         unidad="Cantidad",
-        color_linea="#d378e6"
+        color_linea="#b95dcc"
     )
 
     st.plotly_chart(
