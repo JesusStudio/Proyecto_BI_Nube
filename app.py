@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+
 from sklearn.linear_model import LinearRegression
 
 # =========================================================
@@ -23,6 +24,10 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+        /* =================================================
+           PÁGINA GENERAL
+        ================================================= */
+
         .stApp {
             background-color: #f2f4f3;
         }
@@ -33,16 +38,40 @@ st.markdown(
             max-width: 100%;
         }
 
+        header[data-testid="stHeader"] {
+            background: transparent;
+        }
+
+        #MainMenu {
+            visibility: hidden;
+        }
+
+        footer {
+            visibility: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: #111827 !important;
+        }
+
+        div[data-testid="stMarkdownContainer"] p {
+            color: #111827;
+        }
+
+        /* =================================================
+           ENCABEZADO
+        ================================================= */
+
         .titulo-dashboard {
             background: white;
             padding: 17px 20px 12px 20px;
             border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.10);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.10);
             margin-bottom: 14px;
         }
 
         .titulo-dashboard h1 {
-            color: #1f2937;
+            color: #1f2937 !important;
             font-size: 28px;
             margin: 0;
             font-weight: 750;
@@ -51,10 +80,15 @@ st.markdown(
         .linea-verde {
             height: 4px;
             width: 370px;
+            max-width: 100%;
             background: #1f7159;
             margin-top: 10px;
             border-radius: 5px;
         }
+
+        /* =================================================
+           TARJETAS KPI
+        ================================================= */
 
         .kpi-card {
             background: white;
@@ -62,7 +96,7 @@ st.markdown(
             padding: 16px 9px;
             min-height: 145px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.14);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
             border: 1px solid #e4e7e5;
         }
 
@@ -84,67 +118,115 @@ st.markdown(
             margin-top: 5px;
         }
 
+        /* =================================================
+           GRÁFICOS
+        ================================================= */
+
         div[data-testid="stPlotlyChart"] {
             background: white;
             border-radius: 13px;
             padding: 5px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.13);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.13);
             border: 1px solid #e5e7e6;
         }
 
-        /* =====================================================
-           FILTROS EN TEMA CLARO
-        ===================================================== */
+        /* =================================================
+           ETIQUETAS DE FILTROS
+        ================================================= */
 
-        div[data-testid="stSelectbox"],
-        div[data-testid="stDateInput"] {
-            background: transparent;
-            border-radius: 9px;
+        div[data-testid="stWidgetLabel"] p,
+        .stSelectbox label,
+        .stDateInput label,
+        label {
+            color: #111827 !important;
+            font-weight: 650 !important;
         }
 
-        div[data-baseweb="select"] > div {
+        /* =================================================
+           SELECTBOX CLARO
+        ================================================= */
+
+        div[data-testid="stSelectbox"] {
+            background: transparent !important;
+        }
+
+        div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
             background-color: white !important;
             color: #111827 !important;
-            border: 1px solid #d1d5db !important;
+            border: 1px solid #9ca3af !important;
             border-radius: 8px !important;
         }
 
-        div[data-baseweb="select"] span {
-            color: #111827 !important;
-        }
-
-        div[data-baseweb="select"] input {
+        div[data-testid="stSelectbox"] div[data-baseweb="select"] span {
             color: #111827 !important;
             -webkit-text-fill-color: #111827 !important;
         }
 
-        div[data-baseweb="select"] svg {
+        div[data-testid="stSelectbox"] div[data-baseweb="select"] input {
+            color: #111827 !important;
+            -webkit-text-fill-color: #111827 !important;
+        }
+
+        div[data-testid="stSelectbox"] svg {
             fill: #111827 !important;
             color: #111827 !important;
         }
 
+        /* Menú desplegable */
         div[data-baseweb="popover"] {
             background-color: white !important;
         }
 
-        div[data-baseweb="popover"] ul {
+        div[data-baseweb="popover"] > div {
             background-color: white !important;
         }
 
-        div[data-baseweb="popover"] li {
+        div[data-baseweb="menu"] {
+            background-color: white !important;
+        }
+
+        div[data-baseweb="menu"] li {
             background-color: white !important;
             color: #111827 !important;
         }
 
-        div[data-baseweb="popover"] li:hover {
+        div[data-baseweb="menu"] li:hover {
             background-color: #e8f3ef !important;
             color: #111827 !important;
+        }
+
+        div[role="option"] {
+            background-color: white !important;
+            color: #111827 !important;
+        }
+
+        div[role="option"]:hover {
+            background-color: #e8f3ef !important;
+            color: #111827 !important;
+        }
+
+        /* =================================================
+           DATE INPUT CLARO
+        ================================================= */
+
+        div[data-testid="stDateInput"] {
+            background: transparent !important;
+        }
+
+        div[data-testid="stDateInput"] div[data-baseweb="input"] {
+            background-color: white !important;
+            border-radius: 8px !important;
+        }
+
+        div[data-testid="stDateInput"] div[data-baseweb="input"] > div {
+            background-color: white !important;
         }
 
         div[data-testid="stDateInput"] input {
             background-color: white !important;
             color: #111827 !important;
             -webkit-text-fill-color: #111827 !important;
+            border-color: #9ca3af !important;
         }
 
         div[data-testid="stDateInput"] button {
@@ -157,20 +239,19 @@ st.markdown(
             color: #111827 !important;
         }
 
-        div[data-testid="stWidgetLabel"] p {
-            color: #111827 !important;
-            font-weight: 650 !important;
-        }
-
-        .stSelectbox label,
-        .stDateInput label {
-            font-weight: 650;
+        /* Calendario emergente */
+        div[data-baseweb="calendar"] {
+            background-color: white !important;
             color: #111827 !important;
         }
 
-        /* =====================================================
-           TABLA HTML CLARA
-        ===================================================== */
+        div[data-baseweb="calendar"] * {
+            color: #111827 !important;
+        }
+
+        /* =================================================
+           TABLA RESUMEN CLARA
+        ================================================= */
 
         .contenedor-tabla {
             background-color: white;
@@ -179,7 +260,8 @@ st.markdown(
             padding: 8px;
             height: 335px;
             overflow-y: auto;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+            overflow-x: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
         }
 
         .tabla-resumen {
@@ -199,7 +281,7 @@ st.markdown(
             border-bottom: 2px solid #a7cfc0;
             position: sticky;
             top: 0;
-            z-index: 1;
+            z-index: 2;
         }
 
         .tabla-resumen tbody td {
@@ -220,57 +302,120 @@ st.markdown(
             text-align: right;
         }
 
-        /* =====================================================
-           DATAFRAME Y EXPANDER
-        ===================================================== */
-
-        div[data-testid="stDataFrame"] {
-            background-color: white !important;
-            color: #111827 !important;
-            border-radius: 13px;
-            padding: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.13);
-            border: 1px solid #e5e7e6;
-        }
-
-        div[data-testid="stDataFrame"] * {
-            color: #111827;
-        }
+        /* =================================================
+           EXPANDER CLARO
+        ================================================= */
 
         div[data-testid="stExpander"] {
             background-color: white !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 12px !important;
+            color: #111827 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        div[data-testid="stExpander"] details {
+            background-color: white !important;
+        }
+
+        div[data-testid="stExpander"] summary {
+            background-color: white !important;
+            color: #111827 !important;
+            border-radius: 12px !important;
+        }
+
+        div[data-testid="stExpander"] summary p,
+        div[data-testid="stExpander"] summary span {
+            color: #111827 !important;
+            font-weight: 700 !important;
+        }
+
+        div[data-testid="stExpander"] summary svg {
+            fill: #111827 !important;
+            color: #111827 !important;
+        }
+
+        /* =================================================
+           TABLA DETALLADA CLARA
+        ================================================= */
+
+        .contenedor-detalle {
+            width: 100%;
+            max-height: 460px;
+            overflow: auto;
+            background-color: white;
+            border: 1px solid #d1d5db;
             border-radius: 10px;
-            color: #111827 !important;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
         }
 
-        div[data-testid="stExpander"] summary,
-        div[data-testid="stExpander"] summary p {
-            color: #111827 !important;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            color: #111827 !important;
-        }
-
-        label,
-        div[data-testid="stWidgetLabel"] p {
-            color: #111827 !important;
-        }
-
-        div[data-testid="stMarkdownContainer"] p {
+        .tabla-detalle {
+            width: 100%;
+            min-width: 1250px;
+            border-collapse: collapse;
+            background-color: white;
             color: #111827;
+            font-size: 12px;
         }
 
-        header[data-testid="stHeader"] {
-            background: transparent;
+        .tabla-detalle thead th {
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            background-color: #dcefe8;
+            color: #111827;
+            font-weight: 700;
+            padding: 10px 9px;
+            text-align: left;
+            border-right: 1px solid #bfd9cf;
+            border-bottom: 2px solid #94bfae;
+            white-space: nowrap;
         }
 
-        #MainMenu {
-            visibility: hidden;
+        .tabla-detalle tbody td {
+            background-color: white;
+            color: #111827;
+            padding: 9px;
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
         }
 
-        footer {
-            visibility: hidden;
+        .tabla-detalle tbody tr:nth-child(even) td {
+            background-color: #f8faf9;
+        }
+
+        .tabla-detalle tbody tr:hover td {
+            background-color: #eaf6f1;
+        }
+
+        .tabla-detalle td.numero,
+        .tabla-detalle th.numero {
+            text-align: right;
+        }
+
+        .detalle-info {
+            color: #4b5563;
+            font-size: 13px;
+            margin: 4px 0 10px 0;
+        }
+
+        /* =================================================
+           RESPONSIVE
+        ================================================= */
+
+        @media (max-width: 900px) {
+            .titulo-dashboard h1 {
+                font-size: 22px;
+            }
+
+            .kpi-value {
+                font-size: 18px;
+            }
+
+            .kpi-label {
+                font-size: 13px;
+            }
         }
     </style>
     """,
@@ -286,6 +431,29 @@ def cargar_datos():
     datos = pd.read_csv("fact_recoleccion.csv")
 
     datos.columns = datos.columns.str.strip()
+
+    columnas_requeridas = [
+        "Fecha",
+        "Distrito",
+        "Residuo",
+        "Toneladas",
+        "TiempoRuta",
+        "Saturacion",
+        "Quejas",
+        "DistanciaKm"
+    ]
+
+    columnas_faltantes = [
+        columna
+        for columna in columnas_requeridas
+        if columna not in datos.columns
+    ]
+
+    if columnas_faltantes:
+        raise ValueError(
+            "Faltan las siguientes columnas en el CSV: "
+            + ", ".join(columnas_faltantes)
+        )
 
     datos["Fecha"] = pd.to_datetime(
         datos["Fecha"],
@@ -326,108 +494,10 @@ except Exception as error:
     st.stop()
 
 # =========================================================
-# ENCABEZADO Y FILTROS
-# =========================================================
-
-encabezado, filtros = st.columns(
-    [1.08, 1.25],
-    gap="large"
-)
-
-with encabezado:
-    st.markdown(
-        """
-        <div class="titulo-dashboard">
-            <h1>Dashboard Ejecutivo – Gestión de Residuos Sólidos</h1>
-            <div class="linea-verde"></div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with filtros:
-    filtro1, filtro2, filtro3 = st.columns(
-        [1, 1, 1.55]
-    )
-
-    with filtro1:
-        distrito_seleccionado = st.selectbox(
-            "Distrito",
-            ["Todos"] + sorted(
-                df_original["Distrito"]
-                .dropna()
-                .astype(str)
-                .unique()
-                .tolist()
-            )
-        )
-
-    with filtro2:
-        residuo_seleccionado = st.selectbox(
-            "Residuo",
-            ["Todos"] + sorted(
-                df_original["Residuo"]
-                .dropna()
-                .astype(str)
-                .unique()
-                .tolist()
-            )
-        )
-
-    with filtro3:
-        fecha_minima = df_original["Fecha"].min().date()
-        fecha_maxima = df_original["Fecha"].max().date()
-
-        rango_fechas = st.date_input(
-            "Periodo",
-            value=(fecha_minima, fecha_maxima),
-            min_value=fecha_minima,
-            max_value=fecha_maxima
-        )
-
-# =========================================================
-# APLICACIÓN DE FILTROS
-# =========================================================
-
-df = df_original.copy()
-
-if distrito_seleccionado != "Todos":
-    df = df[
-        df["Distrito"] == distrito_seleccionado
-    ]
-
-if residuo_seleccionado != "Todos":
-    df = df[
-        df["Residuo"] == residuo_seleccionado
-    ]
-
-if (
-    isinstance(rango_fechas, (tuple, list))
-    and len(rango_fechas) == 2
-):
-    fecha_inicio = pd.Timestamp(rango_fechas[0])
-    fecha_fin = pd.Timestamp(rango_fechas[1])
-
-    df = df[
-        (df["Fecha"] >= fecha_inicio)
-        & (df["Fecha"] <= fecha_fin)
-    ]
-
-if df.empty:
-    st.warning(
-        "No existen registros para los filtros seleccionados."
-    )
-    st.stop()
-
-# =========================================================
-# FUNCIONES
+# FUNCIONES AUXILIARES
 # =========================================================
 
 def formato_decimal(valor, decimales=2):
-    """
-    Formato español:
-    3.097,60
-    """
     texto = f"{valor:,.{decimales}f}"
 
     return (
@@ -451,6 +521,64 @@ def tarjeta_kpi(icono, valor, etiqueta):
     )
 
 
+def preparar_tabla_detallada(datos):
+    tabla = datos.copy()
+
+    tabla = tabla.sort_values(
+        "Fecha",
+        ascending=False
+    )
+
+    tabla["Fecha"] = tabla["Fecha"].dt.strftime(
+        "%d/%m/%Y"
+    )
+
+    for columna in [
+        "Toneladas",
+        "TiempoRuta",
+        "Saturacion",
+        "DistanciaKm"
+    ]:
+        if columna in tabla.columns:
+            tabla[columna] = tabla[columna].apply(
+                lambda valor: formato_decimal(valor, 2)
+            )
+
+    if "Quejas" in tabla.columns:
+        tabla["Quejas"] = tabla["Quejas"].apply(
+            lambda valor: formato_decimal(valor, 0)
+        )
+
+    columnas_preferidas = [
+        "RecoleccionID",
+        "Fecha",
+        "Distrito",
+        "Residuo",
+        "Toneladas",
+        "TiempoRuta",
+        "Saturacion",
+        "Quejas",
+        "DistanciaKm",
+        "EstadoCamion"
+    ]
+
+    columnas_existentes = [
+        columna
+        for columna in columnas_preferidas
+        if columna in tabla.columns
+    ]
+
+    otras_columnas = [
+        columna
+        for columna in tabla.columns
+        if columna not in columnas_existentes
+    ]
+
+    return tabla[
+        columnas_existentes + otras_columnas
+    ]
+
+
 def crear_prediccion(
     datos,
     columna,
@@ -459,7 +587,10 @@ def crear_prediccion(
     unidad,
     color_linea
 ):
-    serie = datos[["Fecha", columna]].copy()
+    serie = datos[
+        ["Fecha", columna]
+    ].copy()
+
     serie = serie.dropna()
 
     if operacion == "sum":
@@ -588,7 +719,7 @@ def crear_prediccion(
             ),
             hovertemplate=(
                 "<b>Fecha:</b> %{x|%d/%m/%Y}<br>"
-                f"<b>Predicción:</b> %{{y:.2f}}"
+                "<b>Predicción:</b> %{y:.2f}"
                 "<extra></extra>"
             )
         )
@@ -671,6 +802,120 @@ def crear_prediccion(
     )
 
     return figura
+
+# =========================================================
+# ENCABEZADO Y FILTROS
+# =========================================================
+
+encabezado, filtros = st.columns(
+    [1.08, 1.25],
+    gap="large"
+)
+
+with encabezado:
+    st.markdown(
+        """
+        <div class="titulo-dashboard">
+            <h1>
+                Dashboard Ejecutivo – Gestión de Residuos Sólidos
+            </h1>
+            <div class="linea-verde"></div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with filtros:
+    filtro1, filtro2, filtro3 = st.columns(
+        [1, 1, 1.55]
+    )
+
+    with filtro1:
+        distrito_seleccionado = st.selectbox(
+            "Distrito",
+            ["Todos"] + sorted(
+                df_original["Distrito"]
+                .dropna()
+                .astype(str)
+                .unique()
+                .tolist()
+            )
+        )
+
+    with filtro2:
+        residuo_seleccionado = st.selectbox(
+            "Residuo",
+            ["Todos"] + sorted(
+                df_original["Residuo"]
+                .dropna()
+                .astype(str)
+                .unique()
+                .tolist()
+            )
+        )
+
+    with filtro3:
+        fecha_minima = (
+            df_original["Fecha"]
+            .min()
+            .date()
+        )
+
+        fecha_maxima = (
+            df_original["Fecha"]
+            .max()
+            .date()
+        )
+
+        rango_fechas = st.date_input(
+            "Periodo",
+            value=(
+                fecha_minima,
+                fecha_maxima
+            ),
+            min_value=fecha_minima,
+            max_value=fecha_maxima,
+            format="DD/MM/YYYY"
+        )
+
+# =========================================================
+# APLICACIÓN DE FILTROS
+# =========================================================
+
+df = df_original.copy()
+
+if distrito_seleccionado != "Todos":
+    df = df[
+        df["Distrito"] == distrito_seleccionado
+    ]
+
+if residuo_seleccionado != "Todos":
+    df = df[
+        df["Residuo"] == residuo_seleccionado
+    ]
+
+if (
+    isinstance(rango_fechas, (tuple, list))
+    and len(rango_fechas) == 2
+):
+    fecha_inicio = pd.Timestamp(
+        rango_fechas[0]
+    )
+
+    fecha_fin = pd.Timestamp(
+        rango_fechas[1]
+    )
+
+    df = df[
+        (df["Fecha"] >= fecha_inicio)
+        & (df["Fecha"] <= fecha_fin)
+    ]
+
+if df.empty:
+    st.warning(
+        "No existen registros para los filtros seleccionados."
+    )
+    st.stop()
 
 # =========================================================
 # TARJETAS KPI
@@ -797,7 +1042,11 @@ with zona_principal:
                 b=20
             ),
             xaxis_title="",
-            yaxis_title="Toneladas"
+            yaxis_title="Toneladas",
+            hoverlabel=dict(
+                bgcolor="white",
+                font_color="#111827"
+            )
         )
 
         fig_distrito.update_xaxes(
@@ -901,6 +1150,10 @@ with zona_principal:
                     color="#111827",
                     size=11
                 )
+            ),
+            hoverlabel=dict(
+                bgcolor="white",
+                font_color="#111827"
             )
         )
 
@@ -940,13 +1193,21 @@ with zona_principal:
             )
         )
 
-        tabla_resumen["Total_Toneladas"] = (
-            tabla_resumen["Total_Toneladas"]
+        tabla_resumen[
+            "Total_Toneladas"
+        ] = (
+            tabla_resumen[
+                "Total_Toneladas"
+            ]
             .round(2)
         )
 
-        tabla_resumen["Total_Quejas"] = (
-            tabla_resumen["Total_Quejas"]
+        tabla_resumen[
+            "Total_Quejas"
+        ] = (
+            tabla_resumen[
+                "Total_Quejas"
+            ]
             .round(0)
             .astype(int)
         )
@@ -954,8 +1215,10 @@ with zona_principal:
         tabla_resumen = tabla_resumen.rename(
             columns={
                 "Residuo": "Residuo",
-                "Total_Toneladas": "Total Toneladas",
-                "Total_Quejas": "Total Quejas"
+                "Total_Toneladas":
+                    "Total Toneladas",
+                "Total_Quejas":
+                    "Total Quejas"
             }
         )
 
@@ -975,23 +1238,27 @@ with zona_principal:
 
         tabla_visual = tabla_resumen.copy()
 
-        tabla_visual["Total Toneladas"] = (
-            tabla_visual["Total Toneladas"]
+        tabla_visual[
+            "Total Toneladas"
+        ] = (
+            tabla_visual[
+                "Total Toneladas"
+            ]
             .apply(
-                lambda valor: formato_decimal(
-                    valor,
-                    2
-                )
+                lambda valor:
+                    formato_decimal(valor, 2)
             )
         )
 
-        tabla_visual["Total Quejas"] = (
-            tabla_visual["Total Quejas"]
+        tabla_visual[
+            "Total Quejas"
+        ] = (
+            tabla_visual[
+                "Total Quejas"
+            ]
             .apply(
-                lambda valor: formato_decimal(
-                    valor,
-                    0
-                )
+                lambda valor:
+                    formato_decimal(valor, 0)
             )
         )
 
@@ -1062,7 +1329,11 @@ with zona_principal:
                 b=25
             ),
             xaxis_title="",
-            yaxis_title="Toneladas"
+            yaxis_title="Toneladas",
+            hoverlabel=dict(
+                bgcolor="white",
+                font_color="#111827"
+            )
         )
 
         fig_fecha.update_xaxes(
@@ -1142,17 +1413,38 @@ with zona_predicciones:
     )
 
 # =========================================================
-# DATOS DETALLADOS
+# DATOS DETALLADOS EN TABLA HTML CLARA
 # =========================================================
 
 with st.expander(
     "Ver registros detallados"
 ):
-    st.dataframe(
-        df.sort_values(
-            "Fecha",
-            ascending=False
-        ),
-        use_container_width=True,
-        hide_index=True
+    tabla_detalle = preparar_tabla_detallada(
+        df
+    )
+
+    st.markdown(
+        f"""
+        <div class="detalle-info">
+            Se muestran {len(tabla_detalle):,} registros
+            correspondientes a los filtros seleccionados.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    html_detalle = tabla_detalle.to_html(
+        index=False,
+        classes="tabla-detalle",
+        border=0,
+        escape=True
+    )
+
+    st.markdown(
+        f"""
+        <div class="contenedor-detalle">
+            {html_detalle}
+        </div>
+        """,
+        unsafe_allow_html=True
     )
