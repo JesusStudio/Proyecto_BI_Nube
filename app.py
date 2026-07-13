@@ -112,6 +112,23 @@ st.markdown(
             color: #333333;
         }
 
+        h1, h2, h3, h4, h5, h6 {
+            color: #111827 !important;
+        }
+
+        label,
+        div[data-testid="stWidgetLabel"] p {
+            color: #111827 !important;
+        }
+
+        div[data-testid="stMarkdownContainer"] p {
+            color: #111827;
+        }
+
+        div[data-testid="stExpander"] details summary p {
+            color: #111827 !important;
+        }
+
         header[data-testid="stHeader"] {
             background: transparent;
         }
@@ -164,12 +181,14 @@ def cargar_datos():
 
 try:
     df_original = cargar_datos()
+
 except FileNotFoundError:
     st.error(
         "No se encontró el archivo fact_recoleccion.csv. "
         "Debe estar en la misma carpeta que app.py."
     )
     st.stop()
+
 except Exception as error:
     st.error(f"Error al cargar el dataset: {error}")
     st.stop()
@@ -178,7 +197,10 @@ except Exception as error:
 # ENCABEZADO Y FILTROS
 # =========================================================
 
-encabezado, filtros = st.columns([1.08, 1.25], gap="large")
+encabezado, filtros = st.columns(
+    [1.08, 1.25],
+    gap="large"
+)
 
 with encabezado:
     st.markdown(
@@ -192,7 +214,9 @@ with encabezado:
     )
 
 with filtros:
-    filtro1, filtro2, filtro3 = st.columns([1, 1, 1.55])
+    filtro1, filtro2, filtro3 = st.columns(
+        [1, 1, 1.55]
+    )
 
     with filtro1:
         distrito_seleccionado = st.selectbox(
@@ -236,12 +260,19 @@ with filtros:
 df = df_original.copy()
 
 if distrito_seleccionado != "Todos":
-    df = df[df["Distrito"] == distrito_seleccionado]
+    df = df[
+        df["Distrito"] == distrito_seleccionado
+    ]
 
 if residuo_seleccionado != "Todos":
-    df = df[df["Residuo"] == residuo_seleccionado]
+    df = df[
+        df["Residuo"] == residuo_seleccionado
+    ]
 
-if isinstance(rango_fechas, (tuple, list)) and len(rango_fechas) == 2:
+if (
+    isinstance(rango_fechas, (tuple, list))
+    and len(rango_fechas) == 2
+):
     fecha_inicio = pd.Timestamp(rango_fechas[0])
     fecha_fin = pd.Timestamp(rango_fechas[1])
 
@@ -251,7 +282,9 @@ if isinstance(rango_fechas, (tuple, list)) and len(rango_fechas) == 2:
     ]
 
 if df.empty:
-    st.warning("No existen registros para los filtros seleccionados.")
+    st.warning(
+        "No existen registros para los filtros seleccionados."
+    )
     st.stop()
 
 # =========================================================
@@ -264,7 +297,13 @@ def formato_decimal(valor, decimales=2):
     3.097,60
     """
     texto = f"{valor:,.{decimales}f}"
-    return texto.replace(",", "X").replace(".", ",").replace("X", ".")
+
+    return (
+        texto
+        .replace(",", "X")
+        .replace(".", ",")
+        .replace("X", ".")
+    )
 
 
 def tarjeta_kpi(icono, valor, etiqueta):
@@ -293,27 +332,36 @@ def crear_prediccion(
 
     if operacion == "sum":
         serie = (
-            serie.groupby("Fecha", as_index=False)[columna]
+            serie.groupby(
+                "Fecha",
+                as_index=False
+            )[columna]
             .sum()
             .sort_values("Fecha")
         )
     else:
         serie = (
-            serie.groupby("Fecha", as_index=False)[columna]
+            serie.groupby(
+                "Fecha",
+                as_index=False
+            )[columna]
             .mean()
             .sort_values("Fecha")
         )
 
     if len(serie) < 2:
         figura = go.Figure()
+
         figura.add_annotation(
             text="No hay suficientes datos para predecir",
             showarrow=False
         )
+
         figura.update_layout(
             title=titulo,
             height=230
         )
+
         return figura
 
     fecha_base = serie["Fecha"].min()
@@ -340,13 +388,25 @@ def crear_prediccion(
         fechas_futuras - fecha_base
     ).days.to_numpy().reshape(-1, 1)
 
-    valores_futuros = modelo.predict(dias_futuros)
+    valores_futuros = modelo.predict(
+        dias_futuros
+    )
 
-    if columna in ["Saturacion", "Quejas", "Toneladas"]:
-        valores_futuros = np.maximum(valores_futuros, 0)
+    if columna in [
+        "Saturacion",
+        "Quejas",
+        "Toneladas"
+    ]:
+        valores_futuros = np.maximum(
+            valores_futuros,
+            0
+        )
 
     if columna == "Saturacion":
-        valores_futuros = np.minimum(valores_futuros, 100)
+        valores_futuros = np.minimum(
+            valores_futuros,
+            100
+        )
 
     prediccion = pd.DataFrame({
         "Fecha": fechas_futuras,
@@ -391,24 +451,49 @@ def crear_prediccion(
     figura.update_layout(
         title=dict(
             text=titulo,
-            font=dict(size=16)
+            font=dict(
+                size=16,
+                color="white"
+            )
         ),
         xaxis_title="Fecha",
         yaxis_title=unidad,
         template="plotly_dark",
         height=235,
-        margin=dict(l=20, r=20, t=45, b=20),
+        margin=dict(
+            l=20,
+            r=20,
+            t=45,
+            b=20
+        ),
         legend=dict(
             orientation="h",
             yanchor="bottom",
             y=1.02,
             xanchor="right",
-            x=1
+            x=1,
+            font=dict(
+                color="white"
+            )
+        ),
+        font=dict(
+            color="white"
         )
     )
 
-    return figura
+    figura.update_xaxes(
+        tickfont=dict(color="white"),
+        title_font=dict(color="white"),
+        gridcolor="#374151"
+    )
 
+    figura.update_yaxes(
+        tickfont=dict(color="white"),
+        title_font=dict(color="white"),
+        gridcolor="#374151"
+    )
+
+    return figura
 
 # =========================================================
 # TARJETAS KPI
@@ -478,12 +563,21 @@ with zona_principal:
         gap="large"
     )
 
+    # =====================================================
     # TONELADAS POR DISTRITO
+    # =====================================================
+
     with grafico1:
         toneladas_distrito = (
-            df.groupby("Distrito", as_index=False)["Toneladas"]
+            df.groupby(
+                "Distrito",
+                as_index=False
+            )["Toneladas"]
             .sum()
-            .sort_values("Toneladas", ascending=False)
+            .sort_values(
+                "Toneladas",
+                ascending=False
+            )
         )
 
         fig_distrito = px.bar(
@@ -495,7 +589,12 @@ with zona_principal:
         )
 
         fig_distrito.update_traces(
-            marker_color="#24745d"
+            marker_color="#24745d",
+            textfont=dict(
+                color="white",
+                size=12
+            ),
+            textposition="inside"
         )
 
         fig_distrito.update_layout(
@@ -503,18 +602,50 @@ with zona_principal:
             showlegend=False,
             paper_bgcolor="white",
             plot_bgcolor="white",
-            margin=dict(l=20, r=20, t=50, b=20),
+            font=dict(
+                color="#111827",
+                size=12
+            ),
+            title=dict(
+                text="Total Toneladas por distrito",
+                font=dict(
+                    color="#111827",
+                    size=17
+                )
+            ),
+            margin=dict(
+                l=20,
+                r=20,
+                t=50,
+                b=20
+            ),
             xaxis_title="",
             yaxis_title="Toneladas"
         )
 
         fig_distrito.update_xaxes(
             tickangle=-35,
-            showgrid=False
+            showgrid=False,
+            tickfont=dict(
+                color="#111827"
+            ),
+            title_font=dict(
+                color="#111827"
+            ),
+            linecolor="#9ca3af",
+            zerolinecolor="#d1d5db"
         )
 
         fig_distrito.update_yaxes(
-            gridcolor="#e5e7eb"
+            gridcolor="#e5e7eb",
+            tickfont=dict(
+                color="#111827"
+            ),
+            title_font=dict(
+                color="#111827"
+            ),
+            linecolor="#9ca3af",
+            zerolinecolor="#d1d5db"
         )
 
         st.plotly_chart(
@@ -522,12 +653,21 @@ with zona_principal:
             use_container_width=True
         )
 
+    # =====================================================
     # TONELADAS POR RESIDUO
+    # =====================================================
+
     with grafico2:
         toneladas_residuo = (
-            df.groupby("Residuo", as_index=False)["Toneladas"]
+            df.groupby(
+                "Residuo",
+                as_index=False
+            )["Toneladas"]
             .sum()
-            .sort_values("Toneladas", ascending=False)
+            .sort_values(
+                "Toneladas",
+                ascending=False
+            )
         )
 
         fig_residuo = px.pie(
@@ -541,23 +681,49 @@ with zona_principal:
         fig_residuo.update_traces(
             textposition="inside",
             textinfo="percent",
+            textfont=dict(
+                color="white",
+                size=12
+            ),
             hovertemplate=(
                 "<b>%{label}</b><br>"
                 "Toneladas: %{value:.2f}<br>"
-                "Porcentaje: %{percent}<extra></extra>"
+                "Porcentaje: %{percent}"
+                "<extra></extra>"
             )
         )
 
         fig_residuo.update_layout(
             height=330,
             paper_bgcolor="white",
-            margin=dict(l=10, r=10, t=50, b=10),
+            plot_bgcolor="white",
+            font=dict(
+                color="#111827",
+                size=12
+            ),
+            title=dict(
+                text="Total Toneladas por residuo",
+                font=dict(
+                    color="#111827",
+                    size=17
+                )
+            ),
+            margin=dict(
+                l=10,
+                r=10,
+                t=50,
+                b=10
+            ),
             legend=dict(
                 orientation="v",
                 yanchor="middle",
                 y=0.5,
                 xanchor="left",
-                x=1
+                x=1,
+                font=dict(
+                    color="#111827",
+                    size=11
+                )
             )
         )
 
@@ -571,13 +737,25 @@ with zona_principal:
         gap="large"
     )
 
+    # =====================================================
     # TABLA RESUMEN
+    # =====================================================
+
     with tabla_col:
         tabla_resumen = (
-            df.groupby("Residuo", as_index=False)
+            df.groupby(
+                "Residuo",
+                as_index=False
+            )
             .agg(
-                Total_Toneladas=("Toneladas", "sum"),
-                Total_Quejas=("Quejas", "sum")
+                Total_Toneladas=(
+                    "Toneladas",
+                    "sum"
+                ),
+                Total_Quejas=(
+                    "Quejas",
+                    "sum"
+                )
             )
             .sort_values(
                 "Total_Toneladas",
@@ -599,12 +777,26 @@ with zona_principal:
         tabla_resumen = tabla_resumen.rename(
             columns={
                 "Residuo": "Residuo",
-                "Total_Toneladas": "Total Toneladas",
-                "Total_Quejas": "Total Quejas"
+                "Total_Toneladas":
+                    "Total Toneladas",
+                "Total_Quejas":
+                    "Total Quejas"
             }
         )
 
-        st.markdown("#### Resumen por residuo")
+        st.markdown(
+            """
+            <h4 style="
+                color:#111827;
+                font-size:17px;
+                font-weight:700;
+                margin:5px 0 12px 0;
+            ">
+                Resumen por residuo
+            </h4>
+            """,
+            unsafe_allow_html=True
+        )
 
         st.dataframe(
             tabla_resumen,
@@ -612,19 +804,27 @@ with zona_principal:
             hide_index=True,
             height=335,
             column_config={
-                "Total Toneladas": st.column_config.NumberColumn(
-                    format="%.2f"
-                ),
-                "Total Quejas": st.column_config.NumberColumn(
-                    format="%d"
-                )
+                "Total Toneladas":
+                    st.column_config.NumberColumn(
+                        format="%.2f"
+                    ),
+                "Total Quejas":
+                    st.column_config.NumberColumn(
+                        format="%d"
+                    )
             }
         )
 
+    # =====================================================
     # TONELADAS POR FECHA
+    # =====================================================
+
     with fecha_col:
         toneladas_fecha = (
-            df.groupby("Fecha", as_index=False)["Toneladas"]
+            df.groupby(
+                "Fecha",
+                as_index=False
+            )["Toneladas"]
             .sum()
             .sort_values("Fecha")
         )
@@ -641,24 +841,57 @@ with zona_principal:
                 color="#24745d",
                 width=2
             ),
-            fill="tozeroy"
+            fill="tozeroy",
+            fillcolor="rgba(36, 116, 93, 0.22)"
         )
 
         fig_fecha.update_layout(
             height=380,
             paper_bgcolor="white",
             plot_bgcolor="white",
-            margin=dict(l=20, r=20, t=50, b=25),
+            font=dict(
+                color="#111827",
+                size=12
+            ),
+            title=dict(
+                text="Total Toneladas por fecha",
+                font=dict(
+                    color="#111827",
+                    size=17
+                )
+            ),
+            margin=dict(
+                l=20,
+                r=20,
+                t=50,
+                b=25
+            ),
             xaxis_title="",
             yaxis_title="Toneladas"
         )
 
         fig_fecha.update_xaxes(
-            showgrid=False
+            showgrid=False,
+            tickfont=dict(
+                color="#111827"
+            ),
+            title_font=dict(
+                color="#111827"
+            ),
+            linecolor="#9ca3af",
+            zerolinecolor="#d1d5db"
         )
 
         fig_fecha.update_yaxes(
-            gridcolor="#e5e7eb"
+            gridcolor="#e5e7eb",
+            tickfont=dict(
+                color="#111827"
+            ),
+            title_font=dict(
+                color="#111827"
+            ),
+            linecolor="#9ca3af",
+            zerolinecolor="#d1d5db"
         )
 
         st.plotly_chart(
@@ -717,9 +950,14 @@ with zona_predicciones:
 # DATOS DETALLADOS
 # =========================================================
 
-with st.expander("Ver registros detallados"):
+with st.expander(
+    "Ver registros detallados"
+):
     st.dataframe(
-        df.sort_values("Fecha", ascending=False),
+        df.sort_values(
+            "Fecha",
+            ascending=False
+        ),
         use_container_width=True,
         hide_index=True
     )
